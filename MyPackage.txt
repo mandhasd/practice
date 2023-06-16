@@ -1,0 +1,36 @@
+CREATE OR REPLACE PACKAGE your_package_name IS
+
+    /*
+    Package: your_package_name
+    Description: Package description goes here
+    Author: Your Name
+    Date: DD-MON-YYYY
+    Version: 1.0
+    
+    Version Change History:
+    -----------------------
+    Version 1.0 - DD-MON-YYYY
+    - Initial version of the package
+    
+    */
+
+    -- Package constants
+    PI_CONSTANT CONSTANT NUMBER := 3.14159;
+    MAX_ATTEMPTS CONSTANT NUMBER := 3;
+
+    -- Package types
+    TYPE employee_type IS RECORD (
+        employee_id   NUMBER,
+        first_name    VARCHAR2(50),
+        last_name     VARCHAR2(50),
+        hire_date     DATE
+    );
+
+    -- Package procedures
+    PROCEDURE process_employee(p_employee_id IN NUMBER);
+    
+    -- Package functions
+    FUNCTION calculate_salary(p_employee_id IN NUMBER) RETURN NUMBER;
+
+END your_package_name;
+/

@@ -13,7 +13,7 @@ pipeline {
 			input('Do you want to proceed?')
         }
 	    }
-        stage('test: functional') {
+        stage('test: function') {
                 
                 steps {
 			echo "Running the functional test..."

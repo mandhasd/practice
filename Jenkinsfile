@@ -1,50 +1,32 @@
 pipeline {
     agent any
+
+    environment {
+        function_name = 'java-sample'
+    }
+
     stages {
-        stage('build') {
-                steps {
-                        echo 'Running the build and build code...'
-			
-                }
+        stage('Build') {
+            steps {
+                echo 'Build'
+                sh 'mvn package'
+            }
         }
-	    stage('test: integration-&-quality'){
-		    
-		steps {
-			input('Do you want to proceed?')
+
+        stage('Push') {
+            steps {
+                echo 'Push'
+
+                sh "aws s3 cp target/sample-1.0.3.jar s3://bermtecbatch31"
+            }
         }
-	    }
-        stage('test: function') {
-                
-                steps {
-			echo "Running the functional test..."
-                        }
-        }
-        stage('test: load-&-security') {
-                parallel {
-                        stage('performance Test') {
-                                steps{
-                                        echo "Running the performance test..."
-                                }
-                        }
-                        stage('Integration test') {
-                        
-				steps {
-					echo 'Running the integration test..'
-				}
-                               
-			}  }
-        }
-        stage('approval') {
-                
-                steps {
-			echo "Running the approval process"
-                        }
-        }
-        stage('deploy:prod') {
-                
-                steps {
-			echo "Running the deployment in prod process"
-                        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Build'
+
+                sh "aws lambda update-function-code --function-name $function_name --region us-east-1 --s3-bucket bermtecbatch31 --s3-key sample-1.0.3.jar"
+            }
         }
     }
 }

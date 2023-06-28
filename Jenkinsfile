@@ -1,32 +1,44 @@
 pipeline {
     agent any
-
-    environment {
-        function_name = 'java-sample'
-    }
-
     stages {
-        stage('Build') {
-            steps {
-                echo 'Build'
-                sh 'mvn package'
-            }
+        stage('build') {
+                steps {
+                        echo 'Running the build and build code...'
+			
+                }
         }
-
-        stage('Push') {
-            steps {
-                echo 'Push'
-
-                sh "aws s3 cp target/sample-1.0.3.jar s3://jenkins-samplebucket"
-            }
+	    stage('test: integration-&-quality'){
+		    
+		steps {
+			input('Do you want to proceed?')
         }
-
-        stage('Deploy') {
-            steps {
-                echo 'Build'
-
-                sh "aws lambda update-function-code --function-name $function_name --region us-east-2 --s3-bucket jenkins-samplebucket --s3-key sample-1.0.3.jar"
-            }
+	    }
+        stage('test: function') {
+                
+                steps {
+			echo "Running the functional test..."
+                        }
+        }
+        stage('test: load-&-security') {
+                parallel {
+                        stage('performance Test') {
+                                steps{
+                                        echo "Running the performance test..."
+                                }
+                        }
+                        stage('Integration test') {
+                        
+				steps {
+					echo 'Running the integration test..'
+				}
+                               
+			}  }
+        }
+        stage('deploy:prod') {
+                
+                steps {
+			echo "Running the deployment in prod process"
+                        }
         }
     }
 }
